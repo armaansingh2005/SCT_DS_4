@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Traffic Accident Analysis Dashboard</title>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial;
+}
+
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+    135deg,
+    #141e30,
+    #243b55
+    );
+
+    color:white;
+
+    padding:30px;
+
+}
+
+
+
+.container{
+
+    max-width:1100px;
+
+    margin:auto;
+
+}
+
+
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(200px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.card{
+
+    background:
+    rgba(255,255,255,.15);
+
+    padding:20px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    backdrop-filter:blur(10px);
+
+
+    box-shadow:
+    0 10px 30px
+    rgba(0,0,0,.4);
+
+}
+
+
+
+.buttons{
+
+    text-align:center;
+
+    margin:30px;
+
+}
+
+
+
+button{
+
+    padding:12px 20px;
+
+    border:none;
+
+    border-radius:25px;
+
+    margin:5px;
+
+    cursor:pointer;
+
+    background:#00c6ff;
+
+    color:white;
+
+    transition:.3s;
+
+}
+
+
+
+button:hover{
+
+    transform:scale(1.1);
+
+}
+
+
+
+.chartBox{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:20px;
+
+}
+
+
+
+.map{
+
+    margin-top:30px;
+
+    height:300px;
+
+    background:#222;
+
+    border-radius:20px;
+
+    position:relative;
+
+}
+
+
+
+.hotspot{
+
+    width:30px;
+
+    height:30px;
+
+    background:red;
+
+    border-radius:50%;
+
+    position:absolute;
+
+    animation:pulse 1s infinite;
+
+}
+
+
+
+@keyframes pulse{
+
+50%{
+
+transform:scale(1.5);
+
+opacity:.5;
+
+}
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>🚦 US Traffic Accident Analysis</h1>
+
+
+
+<div class="cards">
+
+
+<div class="card">
+
+<h2>500K+</h2>
+
+<p>Total Accidents</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>45%</h2>
+
+<p>Bad Weather Cases</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>8 AM</h2>
+
+<p>Peak Accident Time</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="buttons">
+
+
+<button onclick="weatherChart()">
+
+Weather Analysis
+
+</button>
+
+
+<button onclick="roadChart()">
+
+Road Conditions
+
+</button>
+
+
+
+<button onclick="timeChart()">
+
+Time Analysis
+
+</button>
+
+
+
+<button onclick="showHotspots()">
+
+Show Hotspots
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="chartBox">
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+
+
+
+<div class="map" id="map">
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<script>
+
+
+let chart;
+
+
+
+// Create Chart Function
+
+function createChart(labels,data,title){
+
+
+
+if(chart){
+
+chart.destroy();
+
+}
+
+
+
+let ctx =
+document.getElementById("chart");
+
+
+
+chart = new Chart(ctx,{
+
+
+type:"bar",
+
+
+
+data:{
+
+
+labels:labels,
+
+
+datasets:[{
+
+label:title,
+
+
+data:data,
+
+
+backgroundColor:[
+
+"#ff1744",
+
+"#2196f3",
+
+"#00c853",
+
+"#ff9800"
+
+],
+
+
+borderRadius:15
+
+
+}]
+
+
+},
+
+
+
+
+options:{
+
+
+responsive:true,
+
+
+animation:{
+
+
+duration:1500
+
+},
+
+
+
+plugins:{
+
+
+title:{
+
+
+display:true,
+
+
+text:title,
+
+
+font:{size:22}
+
+
+}
+
+
+},
+
+
+
+
+scales:{
+
+
+y:{beginAtZero:true}
+
+
+}
+
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+// Weather Analysis
+
+
+function weatherChart(){
+
+
+
+createChart(
+
+[
+"Clear",
+"Rain",
+"Fog",
+"Snow"
+],
+
+
+
+[
+250,
+180,
+120,
+80
+],
+
+
+"Accidents by Weather Conditions"
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// Road Conditions
+
+
+function roadChart(){
+
+
+createChart(
+
+[
+"Junction",
+"Traffic Signal",
+"Crossing",
+"Bump"
+],
+
+
+
+[
+300,
+220,
+150,
+90
+],
+
+
+"Accidents by Road Features"
+
+
+);
+
+
+}
+
+
+
+
+
+
+
+
+
+// Time Analysis
+
+
+function timeChart(){
+
+
+createChart(
+
+[
+"Morning",
+"Afternoon",
+"Evening",
+"Night"
+],
+
+
+
+[
+350,
+250,
+400,
+180
+],
+
+
+"Accidents by Time of Day"
+
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// Accident Hotspots
+
+
+function showHotspots(){
+
+
+let map =
+document.getElementById("map");
+
+
+map.innerHTML="";
+
+
+
+let locations=[
+
+
+[50,80],
+
+[220,120],
+
+[450,200],
+
+[700,90]
+
+
+];
+
+
+
+
+locations.forEach(pos=>{
+
+
+let spot =
+document.createElement("div");
+
+
+
+spot.className="hotspot";
+
+
+
+spot.style.left =
+pos[0]+"px";
+
+
+
+spot.style.top =
+pos[1]+"px";
+
+
+
+map.appendChild(spot);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+// Default Graph
+
+weatherChart();
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
